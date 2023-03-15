@@ -11,7 +11,13 @@ var id;
 var lista = [];
 var kartya = [];
 
-var lepes = 0;
+var lepes = 1;
+var actual = 1;
+
+var k = 1;
+
+var ToronyC = [0,0,0,0];
+
 var gen = false;
 var kartyaAdatok = [
     {id:1,value:-3,sign:''},
@@ -39,23 +45,10 @@ var kartyaAdatok = [
     {id:23,value:0,sign:'hegy'}
 ];
 var toronyAdatok = [
-    {id: "s1",	value: 1,	color:'sarga'},
-    {id: "s2",	value: 2,	color:'sarga'},
-    {id: "s3",	value: 3,	color:'sarga'},
-    {id: "s4",	value: 4,	color:'sarga'},
-    {id: "k1",	value: 1,	color:'kek'},
-    {id: "k2",	value: 2,	color:'kek'},
-    {id: "k3",	value: 3,	color:'kek'},
-    {id: "k4",	value: 4,	color:'kek'},
-    {id: "p1",	value: 1,	color:'piros'},
-    {id: "p2",	value: 2,	color:'piros'},
-    {id: "p3",	value: 3,	color:'piros'},
-    {id: "p4",	value: 4,	color:'piros'},
-    {id: "z1",	value: 1,	color:'zold'},
-    {id: "z2",	value: 2,	color:'zold'},
-    {id: "z3",	value: 3,	color:'zold'},
-    {id: "z4",	value: 4,	color:'zold'}
-
+    {id: "k1", type:'torony', info:{value: 1}},
+    {id: "k2", type:'torony', info:{value: 2}},
+    {id: "k3", type:'torony', info:{value: 3}},
+    {id: "k4", type:'torony', info:{value: 4}},
 ]
 
 var kartyak = [
@@ -131,35 +124,128 @@ function Berak(cella)
 var select;
 
 function Select(cella){
-    console.log(cella);
+    console.log(cella.id);
     select=cella.id;
     var selectid=document.getElementById(select);
     selectid.style.border="1px solid red";
-    
 }
 
 
-// function pontokcount(){
-//     var i = 0;
-//     for (let index = 0; index < 5; index++) {
-//         var sor = 0;
-//         for (let index1 = i; index1 < i+6; index1++) {
-//             sor += kartyak[index1].info.value;
-//         }
-//         i+=6
-//         console.log(index,". sor:",sor);
-//     }
+var coin=0;
+function pontokcount(){
+    var i = 1;
+    for (let index = 1; index < 6; index++) {
+        var sor = 0;
+        var varsz = 0;
+        for (let index1 = i; index1 < i+6; index1++) {
+            if(cellak[index1].type=='kartya'){
+                sor += cellak[index1].info.value;
+            }
+            if(cellak[index1].type=='torony'){
+                varsz += cellak[index1].info.value;
+            }
 
-//     var i = 0;
-//     for (let index = 0; index < 6; index++) {
-//         var oszlop = 0;
-//         for (let index1 = i; index1 < i+6*5; index1+=6) {
-//             oszlop += kartyak[index1].info.value;
-//         }
-//         i++;
-//         console.log(index,". oszlop:",oszlop);
-//     }
-// }
+        }
+        coin+=sor*varsz;
+        i+=6
+        console.log(index,". sor:",sor);
+    }
+
+    var i = 1;
+    for (let index = 1; index < 7; index++) {
+        var oszlop = 0;
+        var varsz = 0;
+        for (let index1 = i; index1 < i+6; index1+=6) {
+            if(cellak[index1].type=="kartya"){
+                sor += cellak[index1].info.value;
+            }
+            if(cellak[index1].type=="torony"){
+                varsz += cellak[index1].info.value;
+            }
+        }
+        coin+=sor*varsz;
+        i++;
+        console.log(index,". oszlop:",oszlop);
+    }
+    
+}
+function CoinSzamol(){
+    var coin2=coin;
+    var coinc = [0,0,0,0,0];
+    if(coin>0){
+        if (coin%100 == 0){
+            coinc[0]=coin%100;
+            coin-=coin%100;
+        }
+        if (coin%50 == 0){
+            coinc[1]=coin%50;
+            coin-=coin%50;
+        }
+        if (coin%10 == 0){
+            coinc[2]=coin%10;
+            coin-=coin%10;
+        }
+        if (coin%5 == 0){
+            coinc[3]=coin%5;
+            coin-=coin%5;
+        }
+        if (coin%1 == 0){
+            coinc[4]=coin%1;
+            coin-=coin%1;
+        }
+    }
+    if(coin<0){
+        if (coin%100 == 0){
+            coinc[0]=coin%100;
+            coin-=coin%100;
+        }
+        if (coin%50 == 0){
+            coinc[1]=coin%50;
+            coin-=coin%50;
+        }
+        if (coin%10 == 0){
+            coinc[2]=coin%10;
+            coin-=coin%10;
+        }
+        if (coin%5 == 0){
+            coinc[3]=coin%5;
+            coin-=coin%5;
+        }
+        if (coin%1 == 0){
+            coinc[4]=coin%1;
+            coin-=coin%1;
+        }
+    }
+    for (let index = 0; index < coinc.length; index++) {
+        var div = document.getElementById("pontokbox");
+        for (let i = 0; i < coinc[0]; i++) {
+            var img = document.createElement("img");
+            img.src = "coin/c100.png"
+            div.appendChild(img);
+        }
+        for (let i = 0; i < coinc[1]; i++) {
+            var img = document.createElement("img");
+            img.src = "coin/c50.png"
+            div.appendChild(img);
+        }
+        for (let i = 0; i < coinc[2]; i++) {
+            var img = document.createElement("img");
+            img.src = "coin/c10.png"
+            div.appendChild(img);
+        }
+        for (let i = 0; i < coinc[3]; i++) {
+            var img = document.createElement("img");
+            img.src = "coin/c5.png"
+            div.appendChild(img);
+        }
+        for (let i = 0; i < coinc[4]; i++) {
+            var img = document.createElement("img");
+            img.src = "coin/c1.png"
+            div.appendChild(img);
+        }
+        
+    }
+}
 
 
 
@@ -179,24 +265,7 @@ function kartyakFeltoltese(){
 
         kartyak[rdiv].type="kartya";
         kartyak[rdiv].info=kartyaAdatok[random-1];
-    }
-
-    // var torony = ["k","p","s","z"];
-    // for(let i=23; i<30; i++){
-    //     var randszin = Math.floor(Math.random()*(3-0+1))+0;
-    //     var random = Math.floor(Math.random()*16);
-    //     var rdiv = Math.floor(Math.random()*30);
-        
-    //     while(lista.includes(rdiv)){
-    //         rdiv = Math.floor(Math.random()*(30-1+1));
-    //     }
-        
-    //     lista.push(rdiv);
-
-    //     kartyak[rdiv].type="torony";
-    //     kartyak[rdiv].info=toronyAdatok[random];
-    // }
-        
+    }  
 }
 
 function kartyavalaszt(){
@@ -216,8 +285,12 @@ function kartyavalaszt(){
     tartalek.id="tartalek";
     ujsordiv.appendChild(tartalek);
 
-    tartalek.setAttribute("onclick","Select(kicsi)");
-    tartalek.setAttribute("onclick", "Berak(this)");
+    tartalek.setAttribute("onclick","Select(kics)");
+
+    var kep = document.createElement("img");
+    kep.src = "js jatek/"+kartyak[0].info.id+".png";
+    kep.id="kics";
+    tartalek.appendChild(kep);
 
     ujsordiv.appendChild(kicsidiv);
     div.appendChild(ujsordiv);
@@ -252,67 +325,161 @@ function KartyaGen(){
         }
         gen = true;
     }
-}
 
-function KartyaHely(kep){
+}
+var actual = 1;
+function KartyaHely(){
     var div = document.getElementById(id);
     var kiskep = document.getElementById(select);
-
-    if(cellak[id]=kartyak[lepes-1]){
+    if(select!="torony1" || select!="torony2" || select!="torony3" || select!="torony4"){
+        if(select == "kics"){
+            cellak[id]=kartyak[0]
+            div.appendChild(kiskep);
+            kiskep.id="";
+            gen = false;
+        }
+        else if(select == "kicsi"){
+            cellak[id]=kartyak[actual]
+            div.appendChild(kiskep);
+            kiskep.id="";
+            gen = false;
+            actual++;
+        }
+    }
+    if(select=="torony1"){
+         cellak[id]=toronyAdatok[0];
+         div.appendChild(kiskep);
+         kiskep.id="";
+         gen = false;
+         ToronyC[0]+=1;
+         UjT1();
+    }
+    if(select=="torony2"){
+        cellak[id]=toronyAdatok[1];
         div.appendChild(kiskep);
         kiskep.id="";
         gen = false;
+        ToronyC[1]+=1;
+        UjT2();
+   }
+   if(select=="torony3"){
+        cellak[id]=toronyAdatok[2];
+        div.appendChild(kiskep);
+        kiskep.id="";
+        gen = false;
+        ToronyC[2]+=1;
+        UjT3();
     }
-
+    if(select=="torony4"){
+        cellak[id]=toronyAdatok[3];
+        div.appendChild(kiskep);
+        kiskep.id="";
+        gen = false;
+        ToronyC[3]+=1;
+        UjT4();
+   }
+    
     console.log(cellak);
 }
-var k = 1;
 
-function AlulTornyok(){
-    var div = document.getElementById("tornyok");
-    for(let i = 0;i<10;i++){
-        var toronydiv = document.createElement("div");
-        div.appendChild(toronydiv);
-        toronydiv.id = k+"i";
-        var kep = toronydiv.id+"t";
-        toronydiv.setAttribute("onclick", "Select(this)");
-        k++;
-    }
-
-
-    for(let i=1; i<5; i++){
-        var div = document.getElementById(i+"i");
+function UjT1(){
+    if(ToronyC[0]< 4){
+        var div = document.getElementById(1+"i");
+        div.setAttribute("onclick", "Select(torony1)");
         var img = document.createElement("img");
         img.src="js jatek/k1.png";
         img.style.width="100%";
         img.style.height="100%";
-        //img.id=i+"it";
+        img.id="torony1";
         div.appendChild(img);
     }
-    for(let i=5; i<8; i++){
-        var div = document.getElementById(i+"i");
+}
+function UjT2(){
+    if(ToronyC[1]< 3){
+        var div = document.getElementById(2+"i");
+        div.setAttribute("onclick", "Select(torony2)");
         var img = document.createElement("img");
         img.src="js jatek/k2.png";
         img.style.width="100%";
         img.style.height="100%";
-        img.id=i+"it";
+        img.id="torony2";
         div.appendChild(img);
     }
-    for(let i=8; i<10; i++){
-        var div = document.getElementById(i+"i");
+}
+function UjT3(){
+    if(ToronyC[2]< 2){
+        var div = document.getElementById(3+"i");
+        div.setAttribute("onclick", "Select(torony3)");
         var img = document.createElement("img");
         img.src="js jatek/k3.png";
         img.style.width="100%";
         img.style.height="100%";
-        img.id=i+"it";
+        img.id="torony3";
         div.appendChild(img);
     }
-    var div = document.getElementById(10+"i");
+}
+function UjT4(){
+    if(ToronyC[3]< 1){
+        var div = document.getElementById(4+"i");
+        div.setAttribute("onclick", "Select(torony4)");
+        var img = document.createElement("img");
+        img.src="js jatek/k4.png";
+        img.style.width="100%";
+        img.style.height="100%";
+        img.id="torony4";
+        div.appendChild(img);
+    }
+}
+
+
+function AlulTornyok(){
+    var div = document.getElementById("tornyok");
+    for(let i = 0;i<4;i++){
+        var toronydiv = document.createElement("div");
+        div.appendChild(toronydiv);
+        toronydiv.id = k+"i";
+        toronydiv.classList+="torony";
+        var kep = toronydiv.id+"t";
+        //var torony = document.getElementById("torony");
+        toronydiv.setAttribute("onclick", "Select(torony)");
+        k++;
+    }
+
+    var div = document.getElementById(1+"i");
+    div.setAttribute("onclick", "Select(torony1)");
+    var img = document.createElement("img");
+    img.src="js jatek/k1.png";
+    img.style.width="100%";
+    img.style.height="100%";
+    img.id="torony1";
+    div.appendChild(img);
+    
+
+    var div = document.getElementById(2+"i");
+    div.setAttribute("onclick", "Select(torony2)");
+    var img = document.createElement("img");
+    img.src="js jatek/k2.png";
+    img.style.width="100%";
+    img.style.height="100%";
+    img.id="torony2";
+    div.appendChild(img);
+
+    var div = document.getElementById(3+"i");
+    div.setAttribute("onclick", "Select(torony3)");
+    var img = document.createElement("img");
+    img.src="js jatek/k3.png";
+    img.style.width="100%";
+    img.style.height="100%";
+    img.id="torony3";
+    div.appendChild(img);
+
+    var div = document.getElementById(4+"i");
+    div.setAttribute("onclick", "Select(torony4)");
     var img = document.createElement("img");
     img.src="js jatek/k4.png";
     img.style.width="100%";
     img.style.height="100%";
-    img.id=10+"it";
+    img.id="torony4";
     div.appendChild(img);
 
 }
@@ -349,11 +516,14 @@ function main(){
     jatekterelrendezes();
     tablageneralasa();
     kartyakFeltoltese();
-    //pontokcount();
     kartyavalaszt();
     KartyaValasztFelt()
     AlulTornyok();
     KorSzamlalo();
+    if(cellak.length==20){
+        pontokcount();
+        CoinSzamol();
+    }
 }
 
 
